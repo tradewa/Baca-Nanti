@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, session
 )
 from werkzeug.exceptions import Aborter
 from urllib.parse import urlparse
@@ -12,8 +12,13 @@ bp = Blueprint('bacaan', __name__)
 @bp.route('/')
 def index():
     db = get_db()
+    
+    # Get user id for current session
+    user_id = session["user_id"]
+    
     bacaan = db.execute(
-        'SELECT r.id, site, title, link, created, user_id, username FROM reading r JOIN user u ON r.user_id = u.id ORDER BY created ASC'
+        'SELECT r.id, site, title, link, created, user_id, username FROM reading r JOIN user u ON r.user_id = u.id WHERE u.id = ? ORDER BY created ASC',
+        (user_id,)
     ).fetchall()
     return render_template('bacaan/index.html', bacaan=bacaan)
 
