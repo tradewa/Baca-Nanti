@@ -1,0 +1,37 @@
+{% extends 'base.html'%}
+
+{% block header %}
+ <h1>{% block title %}List Bacaan {% endblock %}</h1>
+    {% if g.user %}
+        <a class="action" href="{{ url_for ('bacaan.create')}}">New</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Domain</th>
+                <th>Title</th>
+                <th>Link</th>
+                <th>Created Time</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        {% for b in bacaan %}
+            <TR>
+                <td>{{ loop.index }}</td>
+                <td>{{ b['site'] }}</td>
+                <td>{{ b['title'] }}</td>
+                <td>{{ b['link'] }}</td>
+                <td>{{ b['created'] }}</td>
+                <td>
+                    <form method="post" action="{{url_for('bacaan.delete', id=b['id'])}}">
+                        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?')">
+                    </form>
+                </td>
+            </TR>
+        {% endfor %}
+    </table>
+{% endblock %}
